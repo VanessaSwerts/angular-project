@@ -1,5 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 interface AuthResponseData {
   idToken: string,
@@ -29,6 +31,29 @@ export class AuthService {
       .post<AuthResponseData>(
         this.authUrl + this.apiKey,
         authBody
-      );
+      )
+      .pipe(catchError(errorResp => {
+
+        if (!errorResp.error || !errorResp.error.error) {
+          return throwError('An unknown error occurred!');
+        }
+
+        const errorMessage = this.getErrorMessage(errorResp);
+
+        return throwError(errorMessage);
+      }));
+  }
+
+  getErrorMessage(errorRes) {
+    switch (errorRes.error.error.message) {
+      case 'EMAIL_EXISTS':
+        return 'The email address exists already';
+      case 'OPERATION_NOT_ALLOWED':
+        return 'Password sign-in is disabled for this project';
+      case 'TOO_MANY_ATTEMPTS_TRY_LATER':
+        return 'We have blocked all requests from this device due to unusual activity. Try again later';
+      default:
+        return 'An unknown error occurred!';
+    }
   }
 }

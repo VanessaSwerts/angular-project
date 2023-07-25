@@ -8,6 +8,8 @@ import { AuthService } from "./auth.service";
 })
 export class AuthComponent implements OnInit {
   isLoginMode: boolean = true;
+  isLoading: boolean = false;
+  error: string = null;
 
   constructor(
     private authService: AuthService
@@ -23,22 +25,37 @@ export class AuthComponent implements OnInit {
     const email = form.value.email;
     const password = form.value.password;
 
-    if (this.isLoginMode) {
-      console.log('TO DO')
-    }
-    else {
-      this.authService
-        .singUp(email, password)
-        .subscribe(
-          resData => { console.log(resData); },
-          error => { console.error(error); }
-        );
-    }
+    this.isLoading = true;
+
+    this.isLoginMode
+      ? this.onSingIn(email, password)
+      : this.onSingUp(email, password);
 
     form.reset()
   }
 
+  onSingIn(email: string, password: string) {
+    // TO DO
+    this.isLoading = false;
+  }
+
+  onSingUp(email: string, password: string) {
+    this.authService
+      .singUp(email, password)
+      .subscribe(
+        resData => {
+          console.log(resData);
+          this.isLoading = false;
+        },
+        errorMessage => {
+          console.error(errorMessage);
+          this.error = errorMessage;
+          this.isLoading = false;
+        }
+      );
+  }
+
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
-  }
+  } 
 }
