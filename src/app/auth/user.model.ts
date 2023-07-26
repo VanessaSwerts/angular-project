@@ -11,7 +11,7 @@ export class User {
   ) {}
 
   get token() {
-    return this._tokenExpirationDate && new Date() > this._tokenExpirationDate
+    return !this._tokenExpirationDate || new Date() > this._tokenExpirationDate
       ? null
       : this._token;
   }
