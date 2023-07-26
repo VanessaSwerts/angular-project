@@ -30,18 +30,11 @@ export class DataStorageService {
   }
 
   fetchRecipes() {
-    return this.authService.user
+    return this.http
+      .get<Recipe[]>(
+        this.databaseURL + this.recipesEndpoint
+      )
       .pipe(
-        take(1),
-        exhaustMap(user => {
-          return this.http
-            .get<Recipe[]>(
-              this.databaseURL + this.recipesEndpoint,
-              {
-                params: new HttpParams().set('auth', user.token)
-              }
-            )
-        }),
         map(recipes => {
           return recipes.map(recipe => {
             const ingredients = recipe.ingredients ? recipe.ingredients : [];
