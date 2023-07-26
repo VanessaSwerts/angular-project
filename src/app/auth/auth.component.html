@@ -4,6 +4,10 @@
       <p>{{error}}</p>
     </div>
 
+    <div class="alert alert-success" *ngIf="successMessage">
+      <p>{{successMessage}}</p>
+    </div>
+
     <div *ngIf="isLoading" style="text-align: center;">
       <app-loading-spinner></app-loading-spinner>
     </div>
@@ -35,7 +39,7 @@
       </div>
       <div>
         <button class="btn btn-primary" [disabled]="!authForm.valid">{{ isLoginMode ? 'Login' : 'Sign Up'}}</button> |      
-        <button class="btn btn-primary" (click)="onSwitchMode()">{{ isLoginMode ? 'Switch to Sign Up' : 'Switch to Login'}}</button>
+        <button class="btn btn-primary" type="button" (click)="onSwitchMode()">{{ isLoginMode ? 'Switch to Sign Up' : 'Switch to Login'}}</button>
       </div>
     </form>
   </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { AuthService } from "./auth.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-auth',
@@ -10,9 +11,11 @@ export class AuthComponent implements OnInit {
   isLoginMode: boolean = true;
   isLoading: boolean = false;
   error: string = null;
+  successMessage: string = null;
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void { }
@@ -35,8 +38,22 @@ export class AuthComponent implements OnInit {
   }
 
   onSingIn(email: string, password: string) {
-    // TO DO
-    this.isLoading = false;
+    this.authService
+      .singIn(email, password)
+      .subscribe(
+        resData => {
+          if(resData.registered){
+            this.router.navigate(['/recipes']);
+          }
+
+          this.isLoading = false;
+        },
+        errorMessage => {
+          console.error(errorMessage);
+          this.error = errorMessage;
+          this.isLoading = false;
+        }
+      );
   }
 
   onSingUp(email: string, password: string) {
@@ -44,8 +61,9 @@ export class AuthComponent implements OnInit {
       .singUp(email, password)
       .subscribe(
         resData => {
-          console.log(resData);
+          this.successMessage = 'The user was successfully created!'
           this.isLoading = false;
+          this.router.navigate(['/recipes']);
         },
         errorMessage => {
           console.error(errorMessage);
