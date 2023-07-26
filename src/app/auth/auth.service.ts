@@ -110,30 +110,38 @@ export class AuthService {
   }
 
   private handleError(errorResp: HttpErrorResponse) {
+    console.log(errorResp.error)
+    console.log(errorResp.error.error)
     if (!errorResp.error || !errorResp.error.error) {
       return throwError('An unknown error occurred!');
     }
 
-    const errorMessage = this.getErrorMessage(errorResp);
-    return throwError(errorMessage);
-  }
+    let errorMessage;
 
-  private getErrorMessage(errorRes) {
-    switch (errorRes.error.error.message) {
+    switch (errorResp.error.error.message) {
       case 'EMAIL_EXISTS':
-        return 'The email address exists already';
+        errorMessage = 'The email address exists already';
+        break;
       case 'OPERATION_NOT_ALLOWED':
-        return 'Password sign-in is disabled for this project';
+        errorMessage = 'Password sign-in is disabled for this project';
+        break;
       case 'TOO_MANY_ATTEMPTS_TRY_LATER':
-        return 'We have blocked all requests from this device due to unusual activity. Try again later';
+        errorMessage = 'We have blocked all requests from this device due to unusual activity. Try again later';
+        break;
       case 'EMAIL_NOT_FOUND':
-        return 'The email address do not exists';
+        errorMessage = 'The email address do not exists';
+        break;
       case 'INVALID_PASSWORD':
-        return 'The password is invalid';
+        errorMessage = 'The password is invalid';
+        break;
       case 'USER_DISABLED':
-        return 'The user account has been disabled';
+        errorMessage = 'The user account has been disabled';
+        break;
       default:
-        return 'An unknown error occurred!';
+        errorMessage = 'An unknown error occurred!';
+        break;
     }
+
+    return throwError(errorMessage);
   }
 }
