@@ -8,10 +8,7 @@ export class User {
     public id: string,
     private _token: string,
     private _tokenExpirationDate: Date
-  ) {
-
-    console.log({ email, id, _token, _tokenExpirationDate })
-  }
+  ) {}
 
   get token() {
     return this._tokenExpirationDate && new Date() > this._tokenExpirationDate
