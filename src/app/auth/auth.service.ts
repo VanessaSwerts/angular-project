@@ -1,9 +1,11 @@
-import { HttpClient, HttpErrorResponse, HttpResponse } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 import { User } from "./user.model";
 import { Router } from "@angular/router";
+
+import { environment } from "src/environment/environment"; 
 
 interface AuthResponseData {
   idToken: string,
@@ -16,9 +18,6 @@ interface AuthResponseData {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private signUpUrl: string = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='
-  private signInUrl: string = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='
-  private apiKey: string = 'AIzaSyDurtMkpP_eAXT8j3vn3pL4vHlAzxl3I3g'
   private tokenExpirationTimer: any;
 
   user = new BehaviorSubject<User>(null);
@@ -37,7 +36,7 @@ export class AuthService {
 
     return this.http
       .post<AuthResponseData>(
-        this.signUpUrl + this.apiKey,
+        environment.signInUrl + environment.apiKey,
         authBody
       )
       .pipe(
@@ -55,7 +54,7 @@ export class AuthService {
 
     return this.http
       .post<AuthResponseData>(
-        this.signInUrl + this.apiKey,
+        environment.signInUrl + environment.apiKey,
         authBody
       )
       .pipe(

@@ -1,14 +1,15 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
 import { RecipeService } from "../recipes/recipe.service";
 import { Recipe } from "../recipes/recipe.model";
-import { map, take, tap, exhaustMap } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
+
+import { environment } from "src/environment/environment"; 
 
 @Injectable({ providedIn: 'root' })
 export class DataStorageService {
-  private databaseURL: string = 'https://angular-project-1e209-default-rtdb.firebaseio.com/';
   private recipesEndpoint = 'recipes.json';
   userToken: string;
 
@@ -23,7 +24,7 @@ export class DataStorageService {
 
     this.http
       .put(
-        this.databaseURL + this.recipesEndpoint,
+        environment.databaseURL + this.recipesEndpoint,
         recipes
       )
       .subscribe(() => alert('Your recipes have been successfully saved!'));
@@ -32,7 +33,7 @@ export class DataStorageService {
   fetchRecipes() {
     return this.http
       .get<Recipe[]>(
-        this.databaseURL + this.recipesEndpoint
+        environment.databaseURL + this.recipesEndpoint
       )
       .pipe(
         map(recipes => {
